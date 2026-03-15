@@ -1,5 +1,5 @@
 # Project name
-TARGET = uart-printf
+TARGET = btn-intrpt-dbnc
 
 # Toolchain
 CC = arm-none-eabi-gcc

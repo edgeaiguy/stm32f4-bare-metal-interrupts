@@ -35,10 +35,17 @@ static void delay_ms(volatile uint32_t ms) {
 
 int main(void)
 {
+  // note: readback after clock enable lives in uart2_init() so enable these before calling
+  RCC_AHB1ENR |= (1 << 3); // Set bit 3 in AHB1 bus to enable GPIOD clock (LEDs live here)
+  RCC_APB2ENR |= (1 << 14); // bit 14 in APB2 bus enables SYSCFG clock
   uart2_init(); // uart2 setup
+
+  GPIOD_MODER |= (1 << 24); // set PD12 (green LED) to output mode
+  GPIOA_MODER &= ~(0x3 << 0); // clear bits for PA0 set to input mode (default, but explicit)
+  GPIOA_PUPDR |= (1 << 1); // set PA0 to pull-down for button press
   
   // Loop forever
 	while(1) {
-    
+    uart2_printf("LED %d SR=%x msg=%s\r\n", 10, USART2_SR, "test");
   }
 }
