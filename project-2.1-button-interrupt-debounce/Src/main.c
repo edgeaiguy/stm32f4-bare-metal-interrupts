@@ -21,9 +21,50 @@
 #include "stm32f407xx.h"
 #include "uart2.h"
 
+volatile uint32_t millis = 0;
+volatile uint32_t last_press = 0;
+volatile uint32_t press_count = 0;
+
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
+
+/*
+ * Peripheral setup summary:
+ *   GPIOA  - clock ON, PA0 input pull-down (button), PA2/PA3 AF7 (UART)
+ *   GPIOD  - clock ON, PD12 output (green LED)
+ *   USART2 - clock ON, 115200 baud, TX enabled
+ *   SYSCFG - clock ON, PA0 → EXTI0
+ *   EXTI   - line 0 unmasked, rising edge
+ *   NVIC   - EXTI0 IRQ enabled
+ *   SysTick - 1ms tick
+ */
+static void init(void) {
+  /* enable clocks */
+  // note: readback after clock enable lives in uart2_init() so enable these before calling
+  RCC_AHB1ENR |= (1 << 3); // Set bit 3 in AHB1 bus to enable GPIOD clock (LEDs live here)
+  RCC_APB2ENR |= (1 << 14); // bit 14 in APB2 bus enables SYSCFG clock
+  uart2_init(); // uart2 setup
+
+  /* configure pins */
+  GPIOD_MODER &= ~(0x3 << 24); // clear PD12 mode bits --> need to follow clear-then-set pattern
+  GPIOD_MODER |= (1 << 24); // set PD12 (green LED) to output mode
+  GPIOA_MODER &= ~(0x3 << 0); // clear bits for PA0 set to input mode (default, but explicit)
+  GPIOA_PUPDR |= (1 << 1); // set PA0 to pull-down for button press
+
+  /* configure SYSCFG & EXTI peripheral */
+  SYSCFG_EXTICR1 &= ~(0xF << 0); // tell SYSCFG multiplexer to map PA0 to EXTI0
+  EXTI_IMR |= (1 << 0); // unmask interrupt on line 0 => enable interrupt request
+  EXTI_RTSR |= (1 << 0); // trigger on rising edge => button press
+  EXTI_FTSR &= ~(0x1 << 0); // clear bit 0 => no falling edge trigger => we don't care about button release
+  
+  /* configure NVIC and SysTick */
+  NVIC_ISER0 |= (1 << 6); // enable IRQ #6 (from vector table in startup file)=> EXTI0
+  // note: optional to set NVIC_IPR1 here, IRQ 6's 'priority byte', choosing not to. But will need to in future when we have multiple interrupts
+  STK_LOAD = 15999; // reload value for 1ms tick @ 16MHz HSI
+  STK_VAL = 0; // clear current value to force reload
+  STK_CTRL = 0x07; // enable counter, enable interrupt, use processor clock
+}
 
 /* delay_ms(1000) produces roughly 1 second delay (rough calibration for 16 MHz clock) */
 static void delay_ms(volatile uint32_t ms) {
@@ -33,19 +74,24 @@ static void delay_ms(volatile uint32_t ms) {
   }
 }
 
+void SysTick_Handler(void) {
+    millis++;
+}
+
+void EXTI0_IRQHandler(void) {
+    EXTI_PR |= (1 << 0);  // clear pending bit FIRST
+
+    if (millis - last_press > 50) {
+        last_press = millis;
+        press_count++;
+        GPIOD_ODR ^= (1 << 12);  // toggle green LED
+    }
+}
+
 int main(void)
 {
-  // note: readback after clock enable lives in uart2_init() so enable these before calling
-  RCC_AHB1ENR |= (1 << 3); // Set bit 3 in AHB1 bus to enable GPIOD clock (LEDs live here)
-  RCC_APB2ENR |= (1 << 14); // bit 14 in APB2 bus enables SYSCFG clock
-  uart2_init(); // uart2 setup
+  init();
 
-  GPIOD_MODER |= (1 << 24); // set PD12 (green LED) to output mode
-  GPIOA_MODER &= ~(0x3 << 0); // clear bits for PA0 set to input mode (default, but explicit)
-  GPIOA_PUPDR |= (1 << 1); // set PA0 to pull-down for button press
-  
   // Loop forever
-	while(1) {
-    uart2_printf("LED %d SR=%x msg=%s\r\n", 10, USART2_SR, "test");
-  }
+	while(1) {}
 }
