@@ -66,24 +66,20 @@ static void init(void) {
   STK_CTRL = 0x07; // enable counter, enable interrupt, use processor clock
 }
 
-/* delay_ms(1000) produces roughly 1 second delay (rough calibration for 16 MHz clock) */
-static void delay_ms(volatile uint32_t ms) {
-  while (ms--) {
-    // NOTE: at -O0 with volatile, each loop iteration costs several cycles, not just one NOP
-    for (volatile uint32_t i = 0; i < 4000; ++i) { __asm__("nop"); }
-  }
-}
-
+/* 
+ * continuously increment global millis var 
+ * note: uint32_t holds up to 4,294,967,295 = ~49.7 days
+ */
 void SysTick_Handler(void) {
     millis++;
 }
 
 void EXTI0_IRQHandler(void) {
     EXTI_PR |= (1 << 0);  // clear pending bit FIRST
-
+    /* debounce: ignore any triggers w/in 50ms of the previous trigger */
     if (millis - last_press > 50) {
         last_press = millis;
-        press_count++;
+        press_count++; // if debounce passed, increment press_count to alert main loop
         GPIOD_ODR ^= (1 << 12);  // toggle green LED
     }
 }
@@ -91,7 +87,12 @@ void EXTI0_IRQHandler(void) {
 int main(void)
 {
   init();
-
+  uint32_t last_count = 0;
   // Loop forever
-	while(1) {}
+	while(1) {
+    if (press_count != last_count) {
+      last_count = press_count;
+      uart2_printf("Button pressed - count: %d\r\n", last_count);
+    }
+  }
 }
