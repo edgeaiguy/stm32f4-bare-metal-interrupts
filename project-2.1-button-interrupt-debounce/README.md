@@ -131,6 +131,7 @@ Button pressed - count: 1
 Button pressed - count: 2
 Button pressed - count: 3
 ```
+![Terminal Output](images/terminal-output.png)
 
 ## Debug (VSCode + Cortex-Debug)
 
