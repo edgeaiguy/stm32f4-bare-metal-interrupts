@@ -42,21 +42,16 @@ volatile uint32_t press_count = 0;
 static void init(void) {
   /* enable clocks */
   // note: readback after clock enable lives in uart2_init() so enable these before calling
-  RCC_AHB1ENR |= (1 << 3); // Set bit 3 in AHB1 bus to enable GPIOD clock (LEDs live here)
-  RCC_APB2ENR |= (1 << 14); // bit 14 in APB2 bus enables SYSCFG clock
-  uart2_init(); // uart2 setup
+  RCC_AHB1ENR |= (1 << 3); // enable GPIOD (LEDs) clock on AHB1 @ bit 3
+  RCC_APB1ENR |= (1 << 2); // enable TIM4 clock on APB1 @ bit 2
+  RCC_APB2ENR |= (1 << 8); // enable ADC1 clock on APB2 @ bit 8
+  uart2_init(); // uart2 setup: enables GPIOA on AHB1 @ bit 0 (enables PA0-PA15)
 
-  /* configure pins */
-  GPIOD_MODER &= ~(0x3 << 24); // clear PD12 mode bits --> need to follow clear-then-set pattern
+  /* configure pins: TODO */
+  GPIOD_MODER &= ~(0x3 << 24); // clear PD12 mode bits --> need to follow clear-then-set pattern for fields wider than 1 bit
   GPIOD_MODER |= (1 << 24); // set PD12 (green LED) to output mode
   GPIOA_MODER &= ~(0x3 << 0); // clear bits for PA0 set to input mode (default, but explicit)
   GPIOA_PUPDR |= (1 << 1); // set PA0 to pull-down for button press
-
-  /* configure SYSCFG & EXTI peripheral */
-  SYSCFG_EXTICR1 &= ~(0xF << 0); // tell SYSCFG multiplexer to map PA0 to EXTI0
-  EXTI_IMR |= (1 << 0); // unmask interrupt on line 0 => enable interrupt request
-  EXTI_RTSR |= (1 << 0); // trigger on rising edge => button press
-  EXTI_FTSR &= ~(0x1 << 0); // clear bit 0 => no falling edge trigger => we don't care about button release
   
   /* configure NVIC and SysTick */
   NVIC_ISER0 |= (1 << 6); // enable IRQ #6 (from vector table in startup file)=> EXTI0
