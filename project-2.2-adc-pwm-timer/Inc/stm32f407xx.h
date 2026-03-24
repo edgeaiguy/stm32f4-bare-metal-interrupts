@@ -14,7 +14,7 @@
 #define GPIOD_MODER (*(volatile unsigned int *)(GPIOD_BASE + 0x00))// GPIOD_MODER is the first register in GPIOD
 #define GPIOD_ODR (*(volatile unsigned int *)(GPIOD_BASE + 0x14)) // GPIOD_ODR (output data register) is at offset 0x14
 #define GPIOD_BSRR (*(volatile unsigned int *)(GPIOD_BASE + 0x18)) // GPIOD_BSRR (bit set/reset register) is at offset 0x18
-#define GPIOD_AFRL (*(volatile unsigned int *)(GPIOD_BASE + 0x20)) // alternate function low register offset
+#define GPIOD_AFRH (*(volatile unsigned int *)(GPIOD_BASE + 0x24)) // alternate function high (GPIOD pins 8-15) register offset
 
 /* USART2 */
 #define USART2_BASE 0x40004400UL // USART2 base address (from memory map)

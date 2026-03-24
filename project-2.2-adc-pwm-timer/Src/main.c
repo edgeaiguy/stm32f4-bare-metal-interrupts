@@ -21,23 +21,16 @@
 #include "stm32f407xx.h"
 #include "uart2.h"
 
-volatile uint32_t millis = 0;
-volatile uint32_t last_press = 0;
-volatile uint32_t press_count = 0;
-
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
 /*
  * Peripheral setup summary:
- *   GPIOA  - clock ON, PA0 input pull-down (button), PA2/PA3 AF7 (UART)
- *   GPIOD  - clock ON, PD12 output (green LED)
+ *   GPIOA  - clock ON, PA1 analog mode, PA2/PA3 AF7 (UART)
+ *   GPIOD  - clock ON, PD12 AF2 (TIM4 => PWM)
  *   USART2 - clock ON, 115200 baud, TX enabled
- *   SYSCFG - clock ON, PA0 → EXTI0
- *   EXTI   - line 0 unmasked, rising edge
- *   NVIC   - EXTI0 IRQ enabled
- *   SysTick - 1ms tick
+ *   NVIC   - ADC IRQ enabled
  */
 static void init(void) {
   /* enable clocks */
@@ -48,46 +41,18 @@ static void init(void) {
   uart2_init(); // uart2 setup: enables GPIOA on AHB1 @ bit 0 (enables PA0-PA15)
 
   /* configure pins: TODO */
-  GPIOD_MODER &= ~(0x3 << 24); // clear PD12 mode bits --> need to follow clear-then-set pattern for fields wider than 1 bit
-  GPIOD_MODER |= (1 << 24); // set PD12 (green LED) to output mode
-  GPIOA_MODER &= ~(0x3 << 0); // clear bits for PA0 set to input mode (default, but explicit)
-  GPIOA_PUPDR |= (1 << 1); // set PA0 to pull-down for button press
+  GPIOD_MODER &= ~(0x3 << 24); // clear PD12 mode bits --> follow clear-then-set pattern for fields wider than 1 bit
+  GPIOD_MODER |= (0x2 << 24); // set PD12 (green LED) to alternate function mode (10)
+  GPIOD_AFRH &= ~(0xF << 16); // clear AF bits for PD12
+  GPIOD_AFRH |= (0x2 << 16); // set AF2 (TIM4_CH1)
+  GPIOA_MODER &= ~(0x3 << 2); // clear bits for PA1
+  GPIOA_MODER |= (0x3 << 2); // set PA1 to analog mode (MODER = 11)
   
   /* configure NVIC and SysTick */
-  NVIC_ISER0 |= (1 << 6); // enable IRQ #6 (from vector table in startup file)=> EXTI0
-  // note: optional to set NVIC_IPR1 here, IRQ 6's 'priority byte', choosing not to. But will need to in future when we have multiple interrupts
-  STK_LOAD = 15999; // reload value for 1ms tick @ 16MHz HSI
-  STK_VAL = 0; // clear current value to force reload
-  STK_CTRL = 0x07; // enable counter, enable interrupt, use processor clock
-}
-
-/* 
- * continuously increment global millis var 
- * note: uint32_t holds up to 4,294,967,295 = ~49.7 days
- */
-void SysTick_Handler(void) {
-    millis++;
-}
-
-void EXTI0_IRQHandler(void) {
-    EXTI_PR |= (1 << 0);  // clear pending bit FIRST
-    /* debounce: ignore any triggers w/in 50ms of the previous trigger */
-    if (millis - last_press > 50) {
-        last_press = millis;
-        press_count++; // if debounce passed, increment press_count to alert main loop
-        GPIOD_ODR ^= (1 << 12);  // toggle green LED
-    }
+  NVIC_ISER0 |= (1 << 18); // enable ADC_IRQHandler => #18 in startup file
 }
 
 int main(void)
 {
   init();
-  uint32_t last_count = 0;
-  // Loop forever
-	while(1) {
-    if (press_count != last_count) {
-      last_count = press_count;
-      uart2_printf("Button pressed - count: %d\r\n", last_count);
-    }
-  }
 }
