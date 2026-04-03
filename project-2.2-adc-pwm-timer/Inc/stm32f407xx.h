@@ -56,3 +56,9 @@
 
 /* ADC */
 #define ADC1_BASE 0x40012000UL // analog 2 digital converter 1
+#define ADC1_SQR3 (*(volatile unsigned int *)(ADC1_BASE + 0x34)) // regular sequence register 3
+#define ADC1_SQR1 (*(volatile unsigned int *)(ADC1_BASE + 0x2C)) // regular sequence register 1
+#define ADC1_SMPR2 (*(volatile unsigned int *)(ADC1_BASE + 0x10)) // sample time register
+#define ADC1_CR2 (*(volatile unsigned int *)(ADC1_BASE + 0x08)) // control register
+#define ADC1_SR (*(volatile unsigned int *)(ADC1_BASE + 0x00)) // status register
+#define ADC1_DR (*(volatile unsigned int *)(ADC1_BASE + 0x4C)) // data register
