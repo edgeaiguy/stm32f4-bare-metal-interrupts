@@ -29,6 +29,8 @@
  * Peripheral setup summary:
  *   GPIOA  - clock ON, PA1 analog mode, PA2/PA3 AF7 (UART)
  *   GPIOD  - clock ON, PD12 AF2 (TIM4 => PWM)
+ *   TIM2/4 - timer ON
+ *   ADC1   - ADC1 ON
  *   USART2 - clock ON, 115200 baud, TX enabled
  *   NVIC   - ADC IRQ enabled
  */
