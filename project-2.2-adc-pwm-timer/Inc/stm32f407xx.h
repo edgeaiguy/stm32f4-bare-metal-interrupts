@@ -1,3 +1,5 @@
+// NOTE: this file is cheap to include. Include at will
+
 /* Clock enable */
 #define RCC_BASE  0x40023800UL // RCC base address. Note: end all hex address defines with UL (unsigned long)
 #define RCC_AHB1ENR  (*(volatile unsigned int *)(RCC_BASE + 0x30)) // AHB1ENR is at offset 0x30. GPIOA/D lives here
@@ -43,7 +45,14 @@
 #define STK_VAL (*(volatile unsigned int *)(*(volatile unsigned int *)(SYSTICK_BASE + 0x08))) // SysTick current value register
 
 /* TIMERS */
+#define TIM2_BASE 0x40000000UL // timer 2
 #define TIM4_BASE 0x40000800UL // timer 4
+#define TIM4_PSC (*(volatile unsigned int *)(TIM4_BASE + 0x28)) // TIM4 prescaler register
+#define TIM4_ARR (*(volatile unsigned int *)(TIM4_BASE + 0x2C)) // TIM4 auto-reload register
+#define TIM4_CCR1 (*(volatile unsigned int *)(TIM4_BASE + 0x34)) // TIM4 capture/compare register 1
+#define TIM4_CCMR1 (*(volatile unsigned int *)(TIM4_BASE + 0x18)) // TIM4 capture/compare mode register 1
+#define TIM4_CCER (*(volatile unsigned int *)(TIM4_BASE + 0x20)) // TIM4 capture/compare enable register
+#define TIM4_CR1 (*(volatile unsigned int *)(TIM4_BASE + 0x00)) // TIM4 control register 1
 
 /* ADC */
 #define ADC1_BASE 0x40012000UL // analog 2 digital converter 1

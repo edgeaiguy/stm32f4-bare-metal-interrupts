@@ -36,19 +36,31 @@ static void init(void) {
   /* enable clocks */
   // note: readback after clock enable lives in uart2_init() so enable these before calling
   RCC_AHB1ENR |= (1 << 3); // enable GPIOD (LEDs) clock on AHB1 @ bit 3
+  RCC_APB1ENR |= (1 << 0); // enable TIM2 clock on APB1 @ bit 0
   RCC_APB1ENR |= (1 << 2); // enable TIM4 clock on APB1 @ bit 2
   RCC_APB2ENR |= (1 << 8); // enable ADC1 clock on APB2 @ bit 8
   uart2_init(); // uart2 setup: enables GPIOA on AHB1 @ bit 0 (enables PA0-PA15)
 
-  /* configure pins: TODO */
+  /* configure pins */
   GPIOD_MODER &= ~(0x3 << 24); // clear PD12 mode bits --> follow clear-then-set pattern for fields wider than 1 bit
   GPIOD_MODER |= (0x2 << 24); // set PD12 (green LED) to alternate function mode (10)
   GPIOD_AFRH &= ~(0xF << 16); // clear AF bits for PD12
   GPIOD_AFRH |= (0x2 << 16); // set AF2 (TIM4_CH1)
   GPIOA_MODER &= ~(0x3 << 2); // clear bits for PA1
   GPIOA_MODER |= (0x3 << 2); // set PA1 to analog mode (MODER = 11)
-  
-  /* configure NVIC and SysTick */
+
+  /* configure TIM4 for PWM output on PD12 */
+  TIM4_CR1 = 0; // reset control register 1
+  TIM4_PSC = 16 - 1; // set prescaler for a 1 MHz timer tick (16 MHz clock)/(15 + 1) = 1 MHz)
+  TIM4_ARR = 1000 - 1; // set auto-reload value (1000 ticks = 1kHz PWM frequency (1 MHz timer tick / 1000 ticks = 1 kHz PWM frequency))
+  TIM4_CCMR1 = (0x6 << 4) | (1 << 3); // set PWM mode 1 for channel 1
+  TIM4_CCER = (1 << 0); // enable channel 1 output: CC1E bit in CCER
+  TIM4_CCR1 = 250; // set capture/compare value (50% duty cycle for 1 kHz PWM frequency)
+  TIM4_CR1 |= (1 << 0); // enable timer: CEN bit in CR1
+
+  /* TODO: configure ADC1 for single conversion on PA1 (channel 1) */
+
+  /* configure NVIC */
   NVIC_ISER0 |= (1 << 18); // enable ADC_IRQHandler => #18 in startup file
 }
 
