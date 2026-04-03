@@ -29,6 +29,8 @@
  * Peripheral setup summary:
  *   GPIOA  - clock ON, PA1 analog mode, PA2/PA3 AF7 (UART)
  *   GPIOD  - clock ON, PD12 AF2 (TIM4 => PWM)
+ *   TIM2/4 - timer ON
+ *   ADC1   - ADC1 ON
  *   USART2 - clock ON, 115200 baud, TX enabled
  *   NVIC   - ADC IRQ enabled
  */
@@ -36,6 +38,7 @@ static void init(void) {
   /* enable clocks */
   // note: readback after clock enable lives in uart2_init() so enable these before calling
   RCC_AHB1ENR |= (1 << 3); // enable GPIOD (LEDs) clock on AHB1 @ bit 3
+  RCC_APB1ENR |= (1 << 0); // enable TIM2 clock on APB1 @ bit 0
   RCC_APB1ENR |= (1 << 2); // enable TIM4 clock on APB1 @ bit 2
   RCC_APB2ENR |= (1 << 8); // enable ADC1 clock on APB2 @ bit 8
   uart2_init(); // uart2 setup: enables GPIOA on AHB1 @ bit 0 (enables PA0-PA15)
