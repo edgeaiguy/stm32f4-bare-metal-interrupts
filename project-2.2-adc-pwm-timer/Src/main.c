@@ -60,30 +60,49 @@ static void init(void) {
   TIM4_CCR1 = 250;      // set capture/compare value (25% duty cycle for 1 kHz PWM frequency)
   TIM4_CR1 |= (1 << 0); // enable timer: CEN bit in CR1
 
+  /* configure TIM2 to trigger ADC at 100 Hz */
+  TIM2_CR1 = 0;                   // reset
+  TIM2_PSC = 16000 - 1;           // 16 MHz / 16000 = 1 kHz timer tick
+  TIM2_ARR = 10 - 1;              // 1 kHz / 10 = 100 Hz overflow
+  TIM2_CR2 &= ~(0x7 << 4);       // clear MMS bits
+  TIM2_CR2 |= (0x2 << 4);        // MMS = 010: update event as TRGO
+  TIM2_CR1 |= (1 << 0);          // enable TIM2
+
   /* configure ADC1 for single conversion on PA1 (channel 1) */
   ADC1_SQR3 &= ~(0x1F << 0);  // clear sequence register
   ADC1_SQR3 |= (1 << 0);      // channel 1 (PA1) as first conversion
   ADC1_SQR1 &= ~(0xF << 20);  // sequence length = 1 conversion (L = 0000)
   ADC1_SMPR2 &= ~(0x7 << 3);  // clear sample time for channel 1
   ADC1_SMPR2 |= (0x5 << 3);   // 84 cycles sample time (bits [5:3] for ch1)
+  ADC1_CR2 &= ~(0xF << 24);   // clear EXTSEL bits
+  ADC1_CR2 |= (0x6 << 24);    // EXTSEL = 0110: TIM2 TRGO
+  ADC1_CR2 &= ~(0x3 << 28);   // clear EXTEN bits
+  ADC1_CR2 |= (0x1 << 28);    // EXTEN = 01: trigger on rising edge
+  ADC1_CR1 |= (1 << 5);       // EOCIE: end-of-conversion interrupt enable
   ADC1_CR2 |= (1 << 0);       // ADON: turn on ADC
 
   /* configure NVIC */
   NVIC_ISER0 |= (1 << 18); // enable ADC_IRQHandler => #18 in startup file
 }
 
-int main(void)
-{
-  init();
+volatile uint32_t last_adc = 0;
 
-  while (1) {
-    ADC1_CR2 |= (1 << 30);          // SWSTART: trigger conversion
-    while (!(ADC1_SR & (1 << 1)));  // wait for EOC flag
+void ADC_IRQHandler(void) {
+    uint32_t adc_val = ADC1_DR & 0xFFF;
+    uint32_t duty = (adc_val * 999) / 4095; // map duty 0-999 linearly based on 0-4095 ADC reading
+    TIM4_CCR1 = duty; // 'duty' is the PWM duty cycle: the fraction of each PWM period the pin is driven high
+    last_adc = adc_val;
+}
 
-    uint32_t adc_val = ADC1_DR & 0xFFF; // read 12-bit result
-    uint32_t duty = (adc_val * 999) / 4095;
-    TIM4_CCR1 = duty;
+int main(void) {
+    init();
 
-    uart2_printf("ADC: %d  Duty: %d\r\n", adc_val, duty);
-  }
+    volatile uint32_t count = 0;
+    while (1) {
+        count++;
+        if (count >= 1000000) {
+            count = 0;
+            uart2_printf("ADC: %d\r\n", last_adc);
+        }
+    }
 }

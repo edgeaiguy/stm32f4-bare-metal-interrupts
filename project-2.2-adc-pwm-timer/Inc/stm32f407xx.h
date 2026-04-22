@@ -37,15 +37,23 @@
 
 /* NVIC & SysTick: found in programming manual */
 #define NVIC_BASE 0xE000E100UL // NVIC base address --> in 'System Control Space', same for all Cortex-M4 chips
-#define NVIC_ISER0 (*(volatile unsigned int *)(*(volatile unsigned int *)(NVIC_BASE + 0x00))) // interrupt set enable register
-#define NVIC_IPR (*(volatile unsigned int *)(*(volatile unsigned int *)(NVIC_BASE + 0x300))) // interrupt priority register
+#define NVIC_ISER0 (*(volatile unsigned int *)(NVIC_BASE + 0x00)) // interrupt set enable register
+#define NVIC_IPR (*(volatile unsigned int *)(NVIC_BASE + 0x300)) // interrupt priority register
 #define SYSTICK_BASE 0xE000E010UL // SysTack base address
-#define STK_CTRL (*(volatile unsigned int *)(*(volatile unsigned int *)(SYSTICK_BASE + 0x00))) // SysTick control and status register
-#define STK_LOAD (*(volatile unsigned int *)(*(volatile unsigned int *)(SYSTICK_BASE + 0x04))) // SysTick reload value register
-#define STK_VAL (*(volatile unsigned int *)(*(volatile unsigned int *)(SYSTICK_BASE + 0x08))) // SysTick current value register
+#define STK_CTRL (*(volatile unsigned int *)(SYSTICK_BASE + 0x00)) // SysTick control and status register
+#define STK_LOAD (*(volatile unsigned int *)(SYSTICK_BASE + 0x04)) // SysTick reload value register
+#define STK_VAL (*(volatile unsigned int *)(SYSTICK_BASE + 0x08)) // SysTick current value register
 
 /* TIMERS */
 #define TIM2_BASE 0x40000000UL // timer 2
+#define TIM2_PSC (*(volatile unsigned int *)(TIM2_BASE + 0x28)) // TIM2 prescaler register
+#define TIM2_ARR (*(volatile unsigned int *)(TIM2_BASE + 0x2C)) // TIM2 auto-reload register
+#define TIM2_CCR1 (*(volatile unsigned int *)(TIM2_BASE + 0x34)) // TIM2 capture/compare register 1
+#define TIM2_CCMR1 (*(volatile unsigned int *)(TIM2_BASE + 0x18)) // TIM2 capture/compare mode register 1
+#define TIM2_CCER (*(volatile unsigned int *)(TIM2_BASE + 0x20)) // TIM2 capture/compare enable register
+#define TIM2_CR1 (*(volatile unsigned int *)(TIM2_BASE + 0x00)) // TIM2 control register 1
+#define TIM2_CR2 (*(volatile unsigned int *)(TIM2_BASE + 0x04)) // TIM2 control register 1
+#define TIM2_CNT (*(volatile unsigned int *)(TIM2_BASE + 0x24))
 #define TIM4_BASE 0x40000800UL // timer 4
 #define TIM4_PSC (*(volatile unsigned int *)(TIM4_BASE + 0x28)) // TIM4 prescaler register
 #define TIM4_ARR (*(volatile unsigned int *)(TIM4_BASE + 0x2C)) // TIM4 auto-reload register
@@ -59,6 +67,7 @@
 #define ADC1_SQR3 (*(volatile unsigned int *)(ADC1_BASE + 0x34)) // regular sequence register 3
 #define ADC1_SQR1 (*(volatile unsigned int *)(ADC1_BASE + 0x2C)) // regular sequence register 1
 #define ADC1_SMPR2 (*(volatile unsigned int *)(ADC1_BASE + 0x10)) // sample time register
-#define ADC1_CR2 (*(volatile unsigned int *)(ADC1_BASE + 0x08)) // control register
+#define ADC1_CR1 (*(volatile unsigned int *)(ADC1_BASE + 0x04)) // control register 1
+#define ADC1_CR2 (*(volatile unsigned int *)(ADC1_BASE + 0x08)) // control register 2
 #define ADC1_SR (*(volatile unsigned int *)(ADC1_BASE + 0x00)) // status register
 #define ADC1_DR (*(volatile unsigned int *)(ADC1_BASE + 0x4C)) // data register
