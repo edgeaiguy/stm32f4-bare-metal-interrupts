@@ -1,0 +1,208 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" font-family="Consolas, monospace">
+  <style>
+    .label { font-size: 11px; fill: #333; }
+    .label-bold { font-size: 11px; fill: #333; font-weight: bold; }
+    .title { font-size: 16px; fill: #1a1a1a; font-weight: bold; }
+    .subtitle { font-size: 11px; fill: #666; }
+    .pin-label { font-size: 9px; fill: #fff; font-weight: bold; }
+    .row-label { font-size: 8px; fill: #888; }
+    .note { font-size: 10px; fill: #555; }
+    .wire-label { font-size: 9px; font-weight: bold; }
+  </style>
+
+  <!-- Title -->
+  <text x="400" y="28" class="title" text-anchor="middle">Project 2.2 — Potentiometer Wiring Diagram</text>
+  <text x="400" y="46" class="subtitle" text-anchor="middle">STM32F407G-DISC1 Discovery Board → Breadboard → Potentiometer</text>
+
+  <!-- ==================== DISCOVERY BOARD ==================== -->
+  <rect x="40" y="70" width="200" height="280" rx="8" fill="#1a3a5c" stroke="#0d1f33" stroke-width="2"/>
+  <text x="140" y="95" text-anchor="middle" font-size="12" fill="#aaccee" font-weight="bold">STM32F407</text>
+  <text x="140" y="110" text-anchor="middle" font-size="10" fill="#7799bb">Discovery Board</text>
+
+  <!-- USB connector -->
+  <rect x="115" y="60" width="50" height="18" rx="3" fill="#888" stroke="#666" stroke-width="1"/>
+  <text x="140" y="73" text-anchor="middle" font-size="7" fill="#fff">USB</text>
+
+  <!-- MCU chip -->
+  <rect x="95" y="140" width="90" height="70" rx="4" fill="#222" stroke="#444" stroke-width="1"/>
+  <text x="140" y="175" text-anchor="middle" font-size="8" fill="#999">STM32F407VGT6</text>
+  <circle cx="100" cy="148" r="3" fill="#555"/>
+
+  <!-- Pin headers - left side -->
+  <rect x="30" y="130" width="18" height="200" rx="2" fill="#333" stroke="#555" stroke-width="1"/>
+  <!-- Key pins on left -->
+  <rect x="32" y="158" width="14" height="10" rx="1" fill="#cc3333"/>
+  <text x="25" y="166" text-anchor="end" class="pin-label" fill="#cc3333" font-size="9">3V</text>
+
+  <rect x="32" y="178" width="14" height="10" rx="1" fill="#333"/>
+  <text x="25" y="186" text-anchor="end" class="pin-label" fill="#666" font-size="9">GND</text>
+
+  <rect x="32" y="218" width="14" height="10" rx="1" fill="#3388cc"/>
+  <text x="25" y="226" text-anchor="end" class="pin-label" fill="#3388cc" font-size="9">PA1</text>
+
+  <!-- Pin headers - right side -->
+  <rect x="192" y="130" width="18" height="200" rx="2" fill="#333" stroke="#555" stroke-width="1"/>
+
+  <!-- PD12 LED -->
+  <rect x="194" y="198" width="14" height="10" rx="1" fill="#33aa55"/>
+  <text x="215" y="206" class="pin-label" fill="#33aa55" font-size="9">PD12</text>
+
+  <!-- Green LED indicator -->
+  <circle cx="160" cy="240" r="8" fill="#33aa55" opacity="0.6"/>
+  <circle cx="160" cy="240" r="4" fill="#66ff88"/>
+  <text x="160" y="258" text-anchor="middle" font-size="7" fill="#88bbaa">LED (PWM)</text>
+
+  <!-- CP2102 wires (PA2/PA3) -->
+  <text x="140" y="340" text-anchor="middle" font-size="8" fill="#7799bb">PA2/PA3 → CP2102 (UART)</text>
+
+  <!-- ==================== BREADBOARD ==================== -->
+  <rect x="370" y="90" width="390" height="340" rx="6" fill="#f0edd8" stroke="#c9c4a8" stroke-width="2"/>
+  <text x="565" y="112" text-anchor="middle" font-size="11" fill="#998" font-weight="bold">BREADBOARD</text>
+
+  <!-- Power rails - top -->
+  <rect x="390" y="120" width="350" height="24" rx="3" fill="#e8e4d0" stroke="#d0cbb0" stroke-width="1"/>
+  <!-- Red rail (+) -->
+  <line x1="400" y1="128" x2="730" y2="128" stroke="#cc3333" stroke-width="2"/>
+  <text x="385" y="132" text-anchor="end" font-size="10" fill="#cc3333" font-weight="bold">+</text>
+  <!-- Blue rail (-) -->
+  <line x1="400" y1="138" x2="730" y2="138" stroke="#3355cc" stroke-width="2"/>
+  <text x="385" y="142" text-anchor="end" font-size="10" fill="#3355cc" font-weight="bold">−</text>
+
+  <!-- Row labels -->
+  <text x="395" y="172" class="row-label">a</text>
+  <text x="395" y="192" class="row-label">b</text>
+  <text x="395" y="212" class="row-label">c</text>
+  <text x="395" y="232" class="row-label">d</text>
+  <text x="395" y="252" class="row-label">e</text>
+
+  <!-- Center gap -->
+  <rect x="408" y="260" width="340" height="10" rx="2" fill="#d8d4c0"/>
+
+  <text x="395" y="285" class="row-label">f</text>
+  <text x="395" y="305" class="row-label">g</text>
+  <text x="395" y="325" class="row-label">h</text>
+  <text x="395" y="345" class="row-label">i</text>
+  <text x="395" y="365" class="row-label">j</text>
+
+  <!-- Column numbers -->
+  <text x="430" y="160" class="row-label" text-anchor="middle">1</text>
+  <text x="455" y="160" class="row-label" text-anchor="middle">2</text>
+  <text x="480" y="160" class="row-label" text-anchor="middle">3</text>
+  <text x="505" y="160" class="row-label" text-anchor="middle">4</text>
+  <text x="530" y="160" class="row-label" text-anchor="middle">5</text>
+  <text x="555" y="160" class="row-label" text-anchor="middle">6</text>
+  <text x="580" y="160" class="row-label" text-anchor="middle">7</text>
+  <text x="605" y="160" class="row-label" text-anchor="middle">8</text>
+  <text x="630" y="160" class="row-label" text-anchor="middle">9</text>
+  <text x="655" y="160" class="row-label" text-anchor="middle">10</text>
+
+  <!-- Holes grid - top half (rows a-e, cols 1-10) -->
+  <!-- Row a -->
+  <g fill="#888">
+    <circle cx="430" cy="170" r="2.5"/><circle cx="455" cy="170" r="2.5"/><circle cx="480" cy="170" r="2.5"/>
+    <circle cx="505" cy="170" r="2.5"/><circle cx="530" cy="170" r="2.5"/><circle cx="555" cy="170" r="2.5"/>
+    <circle cx="580" cy="170" r="2.5"/><circle cx="605" cy="170" r="2.5"/><circle cx="630" cy="170" r="2.5"/>
+    <circle cx="655" cy="170" r="2.5"/>
+  </g>
+  <!-- Row b -->
+  <g fill="#888">
+    <circle cx="430" cy="190" r="2.5"/><circle cx="455" cy="190" r="2.5"/><circle cx="480" cy="190" r="2.5"/>
+    <circle cx="505" cy="190" r="2.5"/><circle cx="530" cy="190" r="2.5"/><circle cx="555" cy="190" r="2.5"/>
+    <circle cx="580" cy="190" r="2.5"/><circle cx="605" cy="190" r="2.5"/><circle cx="630" cy="190" r="2.5"/>
+    <circle cx="655" cy="190" r="2.5"/>
+  </g>
+  <!-- Row c -->
+  <g fill="#888">
+    <circle cx="430" cy="210" r="2.5"/><circle cx="455" cy="210" r="2.5"/><circle cx="480" cy="210" r="2.5"/>
+    <circle cx="505" cy="210" r="2.5"/><circle cx="530" cy="210" r="2.5"/><circle cx="555" cy="210" r="2.5"/>
+    <circle cx="580" cy="210" r="2.5"/><circle cx="605" cy="210" r="2.5"/><circle cx="630" cy="210" r="2.5"/>
+    <circle cx="655" cy="210" r="2.5"/>
+  </g>
+  <!-- Row d -->
+  <g fill="#888">
+    <circle cx="430" cy="230" r="2.5"/><circle cx="455" cy="230" r="2.5"/><circle cx="480" cy="230" r="2.5"/>
+    <circle cx="505" cy="230" r="2.5"/><circle cx="530" cy="230" r="2.5"/><circle cx="555" cy="230" r="2.5"/>
+    <circle cx="580" cy="230" r="2.5"/><circle cx="605" cy="230" r="2.5"/><circle cx="630" cy="230" r="2.5"/>
+    <circle cx="655" cy="230" r="2.5"/>
+  </g>
+  <!-- Row e -->
+  <g fill="#888">
+    <circle cx="430" cy="250" r="2.5"/><circle cx="455" cy="250" r="2.5"/><circle cx="480" cy="250" r="2.5"/>
+    <circle cx="505" cy="250" r="2.5"/><circle cx="530" cy="250" r="2.5"/><circle cx="555" cy="250" r="2.5"/>
+    <circle cx="580" cy="250" r="2.5"/><circle cx="605" cy="250" r="2.5"/><circle cx="630" cy="250" r="2.5"/>
+    <circle cx="655" cy="250" r="2.5"/>
+  </g>
+
+  <!-- ==================== POTENTIOMETER ==================== -->
+  <!-- Pot body -->
+  <rect x="494" y="196" width="72" height="30" rx="4" fill="#2277aa" stroke="#1a5577" stroke-width="2"/>
+  <text x="530" y="215" text-anchor="middle" font-size="8" fill="#fff" font-weight="bold">POT</text>
+  <!-- Pot knob -->
+  <circle cx="530" cy="195" r="10" fill="#4499cc" stroke="#2277aa" stroke-width="2"/>
+  <line x1="530" y1="186" x2="530" y2="192" stroke="#fff" stroke-width="2"/>
+
+  <!-- Pot pins (in row e, columns 4, 5, 6) -->
+  <circle cx="505" cy="250" r="4" fill="#cc3333" stroke="#fff" stroke-width="1.5"/>
+  <circle cx="530" cy="250" r="4" fill="#ffaa00" stroke="#fff" stroke-width="1.5"/>
+  <circle cx="555" cy="250" r="4" fill="#3355cc" stroke="#fff" stroke-width="1.5"/>
+
+  <!-- Pin labels -->
+  <text x="505" y="394" text-anchor="middle" class="note" fill="#cc3333" font-weight="bold">3.3V pin</text>
+  <text x="530" y="394" text-anchor="middle" class="note" fill="#cc8800" font-weight="bold">Wiper</text>
+  <text x="555" y="394" text-anchor="middle" class="note" fill="#3355cc" font-weight="bold">GND pin</text>
+
+  <!-- ==================== JUMPER WIRES ==================== -->
+
+  <!-- Wire 1: Left pot pin (col 4, row a) to red power rail (3.3V) -->
+  <!-- Jumper from a4 up to red rail -->
+  <circle cx="505" cy="170" r="3" fill="#cc3333"/>
+  <line x1="505" y1="170" x2="505" y2="128" stroke="#cc3333" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="505" cy="128" r="3" fill="#cc3333"/>
+  <text x="515" y="150" class="wire-label" fill="#cc3333">3.3V</text>
+
+  <!-- Wire 2: Right pot pin (col 6, row a) to blue power rail (GND) -->
+  <circle cx="555" cy="170" r="3" fill="#3355cc"/>
+  <line x1="555" y1="170" x2="555" y2="138" stroke="#3355cc" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="555" cy="138" r="3" fill="#3355cc"/>
+  <text x="565" y="150" class="wire-label" fill="#3355cc">GND</text>
+
+  <!-- Wire 3: Middle pot pin (col 5, row a) — signal to PA1 -->
+  <circle cx="530" cy="170" r="3" fill="#ffaa00"/>
+
+  <!-- ==================== WIRES FROM BOARD TO BREADBOARD ==================== -->
+
+  <!-- Wire: 3V pin to red rail -->
+  <path d="M 46,163 C 300,150 350,128 400,128" stroke="#cc3333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="400" cy="128" r="3" fill="#cc3333"/>
+  <text x="300" y="122" text-anchor="middle" class="wire-label" fill="#cc3333">Red wire — 3.3V</text>
+
+  <!-- Wire: GND to blue rail -->
+  <path d="M 46,183 C 300,180 350,138 400,138" stroke="#3355cc" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="400" cy="138" r="3" fill="#3355cc"/>
+  <text x="295" y="145" text-anchor="middle" class="wire-label" fill="#3355cc">Black wire — GND</text>
+
+  <!-- Wire: PA1 to middle pot (col 5, row a) -->
+  <path d="M 46,223 C 200,223 400,190 530,170" stroke="#ffaa00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <text x="310" y="218" text-anchor="middle" class="wire-label" fill="#cc8800">Yellow wire — PA1 (ADC input)</text>
+
+  <!-- ==================== INTERNAL CONNECTIONS (showing row connectivity) ==================== -->
+  <!-- Highlight connected rows -->
+  <rect x="500" y="166" width="64" height="9" rx="2" fill="#ffe8cc" opacity="0.5"/>
+  <rect x="500" y="246" width="64" height="9" rx="2" fill="#ffe8cc" opacity="0.5"/>
+
+  <!-- Vertical connection indicators showing col 4,5,6 are connected vertically -->
+  <line x1="505" y1="172" x2="505" y2="248" stroke="#cc3333" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+  <line x1="530" y1="172" x2="530" y2="248" stroke="#ffaa00" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+  <line x1="555" y1="172" x2="555" y2="248" stroke="#3355cc" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+
+  <!-- ==================== LEGEND ==================== -->
+  <rect x="370" y="410" width="390" height="90" rx="4" fill="#f8f6f0" stroke="#ddd" stroke-width="1"/>
+  <text x="380" y="428" font-size="10" fill="#333" font-weight="bold">Connection Summary:</text>
+  <line x1="385" y1="440" x2="405" y2="440" stroke="#cc3333" stroke-width="3"/>
+  <text x="412" y="444" class="note">Discovery 3V → Red (+) rail → Pot left pin (col 4)</text>
+  <line x1="385" y1="458" x2="405" y2="458" stroke="#3355cc" stroke-width="3"/>
+  <text x="412" y="462" class="note">Discovery GND → Blue (−) rail → Pot right pin (col 6)</text>
+  <line x1="385" y1="476" x2="405" y2="476" stroke="#ffaa00" stroke-width="3"/>
+  <text x="412" y="480" class="note">Discovery PA1 → Pot middle pin / wiper (col 5)</text>
+  <text x="385" y="494" class="note" fill="#888">Columns are connected vertically (rows a–e share the same node)</text>
+</svg>
